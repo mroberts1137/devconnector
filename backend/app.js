@@ -5,6 +5,7 @@ const logger = require('morgan');
 const dotenv = require('dotenv');
 
 const users = require('./routes/api/users');
+const profile = require('./routes/api/profile');
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/users', users);
+app.use('/api/profile', profile);
 
 app.get('/', (req, res) => {
   res.send('Hello');
