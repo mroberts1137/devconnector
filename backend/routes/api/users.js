@@ -33,21 +33,25 @@ router.post(
     const { name, email, password } = req.body;
     console.log(req.body);
     // Check if the email already exists
-    User.findOne({ email: email })
+    User.findOne({ email })
       .then((user) => {
         if (user) {
           return res.status(400).json({ email: 'Email already exists' });
         } else {
           // Create new user
-          const newUser = new User({
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password
-          });
-          // Save the new user
-          newUser
-            .save()
-            .then((user) => res.json(user))
+          const newUser = new User({ name, email, password });
+
+          // Hash the password
+          bcrypt
+            .hash(newUser.password, 10)
+            .then((hash) => {
+              newUser.password = hash;
+              // Save the new user
+              newUser
+                .save()
+                .then((user) => res.json(user))
+                .catch((err) => console.log(err));
+            })
             .catch((err) => console.log(err));
         }
       })
