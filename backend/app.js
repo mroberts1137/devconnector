@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const logger = require('morgan');
-// const config = require('config');
 const dotenv = require('dotenv');
 
 const users = require('./routes/api/users');
+const auth = require('./routes/api/auth');
 const profile = require('./routes/api/profile');
 
 dotenv.config();
@@ -14,7 +14,6 @@ const port = 5000;
 
 const app = express();
 
-// const db = config.get('mongoURI');
 const db = process.env.MONGODB_URI;
 
 mongoose
@@ -26,12 +25,12 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+/**
+ * Routes
+ */
 app.use('/api/users', users);
+app.use('/api/auth', auth);
 app.use('/api/profile', profile);
-
-app.get('/', (req, res) => {
-  res.send('Hello');
-});
 
 app.listen(port, () => {
   console.log(`Server running at http://${hostname}:${port}`);
