@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 
 const users = require('./routes/api/users');
 const auth = require('./routes/api/auth');
-const profile = require('./routes/api/profile');
+const profiles = require('./routes/api/profiles');
 
 dotenv.config();
 
@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: false }));
  */
 app.use('/api/users', users);
 app.use('/api/auth', auth);
-app.use('/api/profile', profile);
+app.use('/api/profiles', profiles);
 
 app.listen(port, () => {
   console.log(`Server running at http://${hostname}:${port}`);

@@ -51,16 +51,16 @@ router.post(
 
         // Hash the password
         const hash = await bcrypt.hash(newUser.password, 10);
-
         newUser.password = hash;
+
         // Save the new user
-        newUser
-          .save()
-          .then((user) => {
-            const token = auth.generateToken(user._id);
-            return res.json({ user: user, token: token });
-          })
-          .catch((err) => console.log(err));
+        const savedUser = await newUser.save();
+        const token = auth.generateToken(savedUser._id);
+        return res.json({
+          msg: 'Successfully registered!',
+          user: savedUser,
+          token
+        });
       }
     } catch (err) {
       console.error(err.message);
