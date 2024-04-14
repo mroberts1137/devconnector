@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const User = require('../models/User');
 require('dotenv').config();
 
 const generateToken = (userId) => {
@@ -33,7 +35,36 @@ const verifyToken = (req, res, next) => {
   }
 };
 
+const authenticate = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    //Check if the user exists
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ errors: [{ msg: 'User does not exist' }] });
+    }
+
+    //Check if password is valid
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
+    } else if (passwordMatch) {
+      // User is authenticated. Add user field to req.
+      req.user = {
+        id: user._id
+      };
+      return next();
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};
+
 module.exports = {
   generateToken,
-  verifyToken
+  verifyToken,
+  authenticate
 };
