@@ -44,9 +44,21 @@ router.post('/', auth.verifyToken, async (req, res) => {
 // @route   GET api/profiles/me
 // @desc    Get current user's profile
 // @access  Private
-router.get('/me', auth.verifyToken, (req, res) => {
-  // Logic to fetch and return the user's profile
-  res.status(200).json({ 'req.user': req.user });
+router.get('/me', auth.verifyToken, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id }).populate(
+      'user',
+      ['name', 'avatar']
+    );
+    if (!profile) {
+      return res.status(400).json({ msg: 'There is no profile for this user' });
+    }
+
+    res.status(200).json(profile);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
 });
 
 module.exports = router;

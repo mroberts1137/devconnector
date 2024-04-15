@@ -13,11 +13,8 @@ const generateToken = (userId) => {
 };
 
 const verifyToken = (req, res, next) => {
-  console.log('Verifying Token...');
-
   // Get token from request header
   const token = req.header('x-auth-token');
-  console.log('x-auth-token: ', token);
 
   // If no token, return error
   if (!token) {
@@ -27,7 +24,6 @@ const verifyToken = (req, res, next) => {
   // Verify the token
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded);
     req.user = decoded.user;
     next();
   } catch (err) {
@@ -59,7 +55,7 @@ const authenticate = async (req, res, next) => {
     }
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server error');
+    res.status(500).send('Server Error');
   }
 };
 
