@@ -12,6 +12,7 @@ const validate = (validations) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
+    // pass validation check
     return next();
   };
 };
@@ -33,8 +34,16 @@ const login = () => {
   ];
 };
 
+const profile = () => {
+  return [
+    check('status', 'Status is required').notEmpty(),
+    check('skills', 'Skills is required').notEmpty()
+  ];
+};
+
 module.exports = {
   validate,
   register,
-  login
+  login,
+  profile
 };
